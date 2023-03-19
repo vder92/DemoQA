@@ -6,20 +6,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.opera.OperaDriver;
 
-import java.util.List;
-import java.util.Set;
+public class WebBrowserTest {
+    private WebDriver driver;
 
-public class SeleniumDriverTest {
-private WebDriver driver;
     @BeforeEach
     public void setup() {
-        //System.setProperty("webdriver.chrome.driver", "D:\\web_drivers/chrome/chromedriver.exe");
-        //WebDriver driver = null;
+
         String browser = System.getProperty("browser");
 
         if (browser.equals("edge")) {
@@ -38,7 +33,7 @@ private WebDriver driver;
 
     @Test
     public void urlTest() {
-    Assertions.assertEquals("https://demoqa.com/automation-practice-form", driver.getCurrentUrl());
+        Assertions.assertEquals("https://demoqa.com/automation-practice-form", driver.getCurrentUrl());
     }
 
     @Test
@@ -48,9 +43,9 @@ private WebDriver driver;
         Assertions.assertEquals("Practice Form", mainHeaderText);
     }
 
-@AfterEach
-    public void stopDriver(){
+    @AfterEach
+    public void stopDriver() {
         driver.quit();
-}
+    }
 
 }
