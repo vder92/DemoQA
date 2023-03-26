@@ -28,64 +28,75 @@ public class FormCheck {
     }
 
     @Test
-    public void fillElements() {
+    public void fillElements() throws InterruptedException {
         //заполнение формы
-        //ФИО, почта, номер
-        driver.findElement(By.xpath("//*[@placeholder='First Name']")).sendKeys("Vasya");
-        driver.findElement(By.xpath("//*[@placeholder='Last Name']")).sendKeys("Ivanov");
-        String nameInputData = "Vasya Ivanov";
-        driver.findElement(By.xpath("//*[@placeholder='name@example.com']")).sendKeys("Ivanov@mail.com");
+        //тестовые данные
+        String nameInputData = "Vasya";
+        String lastNameInputData = "Ivanov";
+        String nameAndLastInputData = nameInputData + " " + lastNameInputData;
         String eMailInputData = "Ivanov@mail.com";
-        driver.findElement(By.id("userNumber")).sendKeys("8913123456");
         String numberInputData = "8913123456";
+        String genderInputData = "Male";
+        String birthDayInputData = "15 March,2023";
+        String subjectInputData = "Maths";
+        String hobbyInputData = "Sports";
+        String addressInputData = "Lenina 1";
+        String fileFromForm = "1.png";
+        String stateInputData = "NCR";
+        String cityInputData = "Delhi";
+        String stateCityInputData = "NCR Delhi";
+
+        //ФИО, почта, номер
+        driver.findElement(By.xpath("//*[@placeholder='First Name']")).sendKeys(nameInputData);
+        driver.findElement(By.xpath("//*[@placeholder='Last Name']")).sendKeys(lastNameInputData);
+        driver.findElement(By.xpath("//*[@placeholder='name@example.com']")).sendKeys(eMailInputData);
+        driver.findElement(By.id("userNumber")).sendKeys(numberInputData);
         //gender
         driver.findElement(By.xpath("//*[@for='gender-radio-1']")).click();
-        String genderInputData = "Male";
         //birthday
         driver.findElement(By.id("dateOfBirthInput")).click();
         driver.findElement(By.xpath("//div[text()='15']")).click();
-        String birthDayInputData = "15 March,2023";
         //scroll down
         JavascriptExecutor js = ((JavascriptExecutor) driver);
         js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
         //subject
-        driver.findElement(By.xpath("//*[@id='subjectsContainer']//input")).sendKeys("Maths");
+        driver.findElement(By.xpath("//*[@id='subjectsContainer']//input")).sendKeys(subjectInputData);
         driver.findElement(By.xpath("//*[@id='subjectsContainer']//input")).sendKeys(Keys.RETURN);
-        String subjectInputData = "Maths";
         //hobbies
         driver.findElement(By.xpath("//*[@for='hobbies-checkbox-1']")).click();
-        String hobbyInputData = "Sports";
         //address
-        driver.findElement(By.xpath("//*[@placeholder='Current Address']")).sendKeys("Lenina 1");
-        String addressInputData = "Lenina 1";
+        driver.findElement(By.xpath("//*[@placeholder='Current Address']")).sendKeys(addressInputData);
         // Загрузка файла
         File f = new File("1.png");
         String filepath = f.getAbsolutePath();
         driver.findElement(By.id("uploadPicture")).sendKeys(filepath);
-        String fileFromForm = "1.png";
         //state
-        driver.findElement(By.xpath("//*[@id='react-select-3-input']")).sendKeys("nc");
+        driver.findElement(By.xpath("//*[@id='react-select-3-input']")).sendKeys(stateInputData);
         driver.findElement(By.xpath("//*[@id='react-select-3-input']")).sendKeys(Keys.RETURN);
         //city
-        driver.findElement(By.xpath("//*[@id='react-select-4-input']")).sendKeys("de");
+        driver.findElement(By.xpath("//*[@id='react-select-4-input']")).sendKeys(cityInputData);
         driver.findElement(By.xpath("//*[@id='react-select-4-input']")).sendKeys(Keys.ENTER);
-        String stateCityInputData = "NCR Delhi";
 
         //submit  form
 
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("document.body.style.zoom = '0.5'");
-        WebElement buttonSubmit = driver.findElement(By.xpath("//*[@type='submit']"));
-        executor.executeScript("arguments[0].click()", buttonSubmit);
+//        JavascriptExecutor executor = (JavascriptExecutor) driver;
+//        executor.executeScript("document.body.style.zoom = '0.5'");
+//        WebElement buttonSubmit = driver.findElement(By.xpath("//*[@type='submit']"));
+//        executor.executeScript("arguments[0].click()", buttonSubmit);
+
+        WebElement submitButton = driver.findElement(By.id("submit"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", submitButton);
+        Thread.sleep(500);
+        submitButton.click();
 
         //wait for the final form
         WebDriverWait wait = new WebDriverWait(driver, 30, 500);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='example-modal-sizes-title-lg']")));
         //submitted form checks
-        executor.executeScript("document.body.style.zoom = '1'");
+        //executor.executeScript("document.body.style.zoom = '1'");
         //Name
         WebElement name = driver.findElement(By.xpath("//tbody//tr[1]//td[2]"));
-        assertEquals(nameInputData, name.getText());
+        assertEquals(nameAndLastInputData, name.getText());
         //eMail
         WebElement eMail = driver.findElement(By.xpath("//tbody//tr[2]//td[2]"));
         assertEquals(eMailInputData, eMail.getText());
@@ -112,7 +123,6 @@ public class FormCheck {
         assertEquals(addressInputData, address.getText());
         //State and City
         WebElement stateCity = driver.findElement(By.xpath("//tbody//tr[10]//td[2]"));
-        //String test = executor.executeScript("document.getElementByXpath('//tbody//tr[10]//td[2]').value").toString();
         assertEquals(stateCityInputData, stateCity.getText());
     }
 }
